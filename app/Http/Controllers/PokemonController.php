@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\NovoPokemon;
+use App\Notifications\PokedexCheia;
+
 
 use App\Pokemon;
 use App\User;
@@ -26,13 +29,11 @@ class PokemonController extends Controller
 		$user->qtdPokedex = $user->qtdPokedex+1;
 		$user->save();
 
-
-		/*Caso a qtdPokedex seja maior/igual a 70 e menor que 100...
-		if($user->qtdPokedex >= 70 && $user->qtdPokedex <100){
-			//usuário deve ser notificado por e-mail que a pokedex ficará cheia em breve
-			//O email deve mostrar a quantidade de pokemon que estão na pokedex
-			//     [ NECESSARIO COMPLETAR ]
-		}*/
+		$user->notify(new NovoPokemon($novoPokemon));
+		
+		if($user->qtdPokedex >= 75 && $user->qtdPokedex <100){
+			$user->notify(new PokedexCheia());
+		}
 
 
 		//Caso a qtdPokedex seja igual a 100...
